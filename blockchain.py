@@ -8,7 +8,8 @@ class Blockchain(object):
         self.chain = []
         self.current_transactions = []
 
-        # Create the genesis block
+        # Create the genesis block, a genesis block—a block with no predecessors.
+        # We’ll also need to add a “proof” to our genesis block which is the result of mining (or proof of work).
         self.new_block(previous_hash=1, proof=100)
 
     def new_block(self, proof, previous_hash=None):
@@ -50,10 +51,21 @@ class Blockchain(object):
 
         return self.last_block['index'] + 1
 
+    @property
+    def last_block(self):
+        return self.chain[-1]
+
     @staticmethod
     def hash(block):
-        # Hashes a Block
-        pass
+        """
+        Creates a SHA-256 hash of a Block
+        :param block: <dict> Block
+        :return: <str>
+        """
+
+        # We must make sure that the Dictionary is Ordered, or we'll have inconsistent hashes
+        block_string = json.dumps(block, sort_keys=True).encode()
+        return hashlib.sha256(block_string).hexdigest()
 
     @property
     def last_block(self):
